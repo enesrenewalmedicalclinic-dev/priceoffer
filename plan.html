@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta property="og:title" content="Renewal Medical Clinic · Personal treatment plan">
+<meta property="og:description" content="Your plan, 3D treatment view and prices">
+<meta property="og:image" content="br/og.jpg">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0b1a2b">
+<title>Renewal Medical Clinic</title>
+<script type="importmap">{"imports":{"three":"./lib/three.module.js"}}</script>
+<style>
+:root{--navy:#0f1b2d;--teal:#1d4e5f;--gold:#b48a45;--gold2:#f2d38f;--red:#b3262f;--ink:#111827;--ink2:#374151;--muted:#6b7280;--line:#e6e9ef;--bg:#f4f6f9}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Figtree','Inter','Segoe UI',system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;padding-bottom:96px}
+.hero{background:linear-gradient(135deg,#0b1a2b 0%,#12384a 60%,#0d2b3a 100%);color:#fff;padding:22px 20px 70px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-80px;top:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(242,211,143,.22),transparent 70%)}
+.brand{display:flex;align-items:center;gap:10px;max-width:760px;margin:0 auto}
+.brand img{width:44px;height:44px;border-radius:50%;background:#fff;padding:3px;object-fit:contain}
+.brand b{font-family:Georgia,'Times New Roman',serif;font-size:1.1rem;letter-spacing:.01em}
+.brand small{display:block;font-size:.72rem;color:rgba(255,255,255,.65);letter-spacing:.04em}
+.hero .in{max-width:760px;margin:26px auto 0;position:relative;z-index:1}
+.kick{font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold2)}
+.hero h1{font-family:Georgia,'Times New Roman',serif;font-weight:500;font-size:1.9rem;line-height:1.2;margin:8px 0 10px}
+.hero p{margin:0;color:rgba(255,255,255,.82);font-size:.98rem}
+main{max-width:760px;margin:-46px auto 0;padding:0 14px;position:relative;z-index:2;display:grid;gap:14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 6px 20px rgba(15,27,45,.06)}
+.card h2{margin:0 0 10px;font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
+.story{font-size:1.02rem;color:var(--ink2);margin:0}
+/* simülasyon */
+.sim{padding:0;overflow:hidden}
+.sim .sh{padding:16px 18px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sim .sh h2{margin:0}
+.stage{position:relative;background:#0b1a2b;display:grid;place-items:center;width:100%;aspect-ratio:4/3;margin:0 auto;overflow:hidden}
+.stage.on{aspect-ratio:9/16;max-height:78vh;background:#efe5d8}
+.ctl[hidden],.note[hidden],.ctl button[hidden]{display:none!important}
+.stage canvas{display:block;width:100%;height:100%;object-fit:contain}
+.poster{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:12px;text-align:center;padding:20px;background:linear-gradient(180deg,rgba(11,26,43,.25),rgba(11,26,43,.75)),url('br/dent.jpg?v=2') center/cover;cursor:pointer;border:0;width:100%;font:inherit;color:#fff}
+.poster .pl{width:86px;height:86px;border-radius:50%;background:var(--red);display:grid;place-items:center;box-shadow:0 10px 30px rgba(179,38,47,.35);transition:transform .2s}
+.poster:hover .pl{transform:scale(1.06)}
+.poster .pl svg{width:34px;height:34px;margin-left:5px;fill:#fff}
+.poster b{font-family:Georgia,serif;font-size:1.35rem;font-weight:500}
+.poster span{color:rgba(255,255,255,.85);font-size:.9rem}
+.poster b{text-shadow:0 2px 10px rgba(0,0,0,.4)}
+.ctl{display:flex;align-items:center;gap:10px;padding:12px 16px;border-top:1px solid var(--line)}
+.ctl button{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;display:grid;place-items:center;cursor:pointer;font-size:1.1rem;color:var(--navy)}
+.ctl button.main{background:var(--navy);color:#fff;border-color:var(--navy)}
+.ctl button:disabled{opacity:.4}
+.bar{flex:1;height:6px;border-radius:6px;background:#e9edf2;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--gold));border-radius:6px}
+.note{padding:0 16px 14px;font-size:.78rem;color:var(--muted)}
+.load{position:absolute;inset:0;display:none;place-items:center;align-content:center;gap:10px;background:rgba(255,253,249,.9);font-weight:600;color:var(--ink2)}
+.load.on{display:grid}
+.spin{width:38px;height:38px;border-radius:50%;border:4px solid #e3d8ca;border-top-color:var(--red);animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+/* seanslar ve fiyat */
+.ses{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:10px;border-left:4px solid var(--teal)}
+.ses:first-of-type{margin-top:0}
+.ses .t{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.ses .t b{font-size:1rem;color:var(--navy)}
+.ses .t em{font-style:normal;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums}
+.ses .st{font-size:.84rem;color:var(--muted);margin:2px 0 8px}
+.ses ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.ses li{display:flex;gap:10px;align-items:flex-start;font-size:.95rem;color:var(--ink2)}
+.ses li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:.5em}
+.ses .pl2{margin-top:8px;font-size:.8rem;color:var(--muted)}
+.tot{background:linear-gradient(135deg,#0b1a2b,#14384a);color:#fff;border:0}
+.tot .r{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.tot .r span{font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.75)}
+.tot .r b{font-family:Georgia,serif;font-size:2.2rem;font-weight:500;color:var(--gold2);font-variant-numeric:tabular-nums}
+.tot p{margin:8px 0 0;font-size:.86rem;color:rgba(255,255,255,.78)}
+.inc{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px 16px}
+.inc li{display:flex;gap:10px;align-items:flex-start;font-size:.93rem;color:var(--ink2)}
+.inc li i{font-style:normal;flex:none;width:22px;text-align:center}
+.ab{display:grid;gap:10px}
+.ab details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fafbfc}
+.ab summary{cursor:pointer;font-weight:700;color:var(--navy);list-style:none;display:flex;justify-content:space-between;gap:10px}
+.ab summary::-webkit-details-marker{display:none}
+.ab summary::after{content:"＋";color:var(--teal);font-weight:800}
+.ab details[open] summary::after{content:"－"}
+.ab p{margin:8px 0 0;color:var(--ink2);font-size:.94rem}
+.doc{display:flex;gap:14px;align-items:center}
+.doc img{width:72px;height:72px;border-radius:50%;object-fit:cover;flex:none;border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.doc b{display:block;font-family:Georgia,serif;font-size:1.15rem;font-weight:500}
+.doc span{font-size:.84rem;color:var(--muted)}
+.meta{display:grid;gap:6px;font-size:.9rem;color:var(--ink2)}
+.meta div{display:flex;gap:10px}
+.sign{margin-top:12px;color:var(--muted);font-size:.9rem;white-space:pre-line}
+footer{max-width:760px;margin:18px auto 0;padding:0 18px;text-align:center;color:var(--muted);font-size:.8rem;display:grid;gap:4px}
+footer a{color:var(--teal);text-decoration:none}
+.cta{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:12px 14px calc(12px + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;justify-content:center}
+.cta a{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:520px;padding:14px 18px;border-radius:14px;background:#1f9d55;color:#fff;font-weight:800;font-size:1rem;text-decoration:none;box-shadow:0 8px 20px rgba(31,157,85,.28)}
+.cta svg{width:22px;height:22px;fill:#fff}
+.err{max-width:520px;margin:80px auto;padding:24px;text-align:center;background:#fff;border-radius:16px;border:1px solid var(--line)}
+[dir="rtl"] .ses{border-left:1px solid var(--line);border-right:4px solid var(--teal)}
+@media (min-width:720px){ .hero h1{font-size:2.4rem} .card{padding:22px 24px} }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const AR = {0x67E:[0xFB56,0xFB57,0xFB58,0xFB59],0x686:[0xFB7A,0xFB7B,0xFB7C,0xFB7D],0x698:[0xFB8A,0xFB8B],0x6A9:[0xFB8E,0xFB8F,0xFB90,0xFB91],0x6AF:[0xFB92,0xFB93,0xFB94,0xFB95],0x6CC:[0xFBFC,0xFBFD,0xFBFE,0xFBFF],0x621:[0xFE80],0x622:[0xFE81,0xFE82],0x623:[0xFE83,0xFE84],0x624:[0xFE85,0xFE86],0x625:[0xFE87,0xFE88],0x626:[0xFE89,0xFE8A,0xFE8B,0xFE8C],0x627:[0xFE8D,0xFE8E],0x628:[0xFE8F,0xFE90,0xFE91,0xFE92],0x629:[0xFE93,0xFE94],0x62A:[0xFE95,0xFE96,0xFE97,0xFE98],0x62B:[0xFE99,0xFE9A,0xFE9B,0xFE9C],0x62C:[0xFE9D,0xFE9E,0xFE9F,0xFEA0],0x62D:[0xFEA1,0xFEA2,0xFEA3,0xFEA4],0x62E:[0xFEA5,0xFEA6,0xFEA7,0xFEA8],0x62F:[0xFEA9,0xFEAA],0x630:[0xFEAB,0xFEAC],0x631:[0xFEAD,0xFEAE],0x632:[0xFEAF,0xFEB0],0x633:[0xFEB1,0xFEB2,0xFEB3,0xFEB4],0x634:[0xFEB5,0xFEB6,0xFEB7,0xFEB8],0x635:[0xFEB9,0xFEBA,0xFEBB,0xFEBC],0x636:[0xFEBD,0xFEBE,0xFEBF,0xFEC0],0x637:[0xFEC1,0xFEC2,0xFEC3,0xFEC4],0x638:[0xFEC5,0xFEC6,0xFEC7,0xFEC8],0x639:[0xFEC9,0xFECA,0xFECB,0xFECC],0x63A:[0xFECD,0xFECE,0xFECF,0xFED0],0x641:[0xFED1,0xFED2,0xFED3,0xFED4],0x642:[0xFED5,0xFED6,0xFED7,0xFED8],0x643:[0xFED9,0xFEDA,0xFEDB,0xFEDC],0x644:[0xFEDD,0xFEDE,0xFEDF,0xFEE0],0x645:[0xFEE1,0xFEE2,0xFEE3,0xFEE4],0x646:[0xFEE5,0xFEE6,0xFEE7,0xFEE8],0x647:[0xFEE9,0xFEEA,0xFEEB,0xFEEC],0x648:[0xFEED,0xFEEE],0x649:[0xFEEF,0xFEF0],0x64A:[0xFEF1,0xFEF2,0xFEF3,0xFEF4]};
+const LAMALEF = {0x622:[0xFEF5,0xFEF6],0x623:[0xFEF7,0xFEF8],0x625:[0xFEF9,0xFEFA],0x627:[0xFEFB,0xFEFC]};
+const isAr = cp => cp>=0x600 && cp<=0x6FF;
+const hasArabic = t => /[؀-ۿ]/.test(t);
+function shapeArabic(text){
+  const cps = [...text].map(c=>c.codePointAt(0)).filter(cp=>!(cp>=0x64B&&cp<=0x65F) && cp!==0x670);
+  const out = [];
+  for (let i=0;i<cps.length;i++){
+    const cp=cps[i], f=AR[cp]; if (!f){ out.push(cp); continue; }
+    const prev = cps[i-1], pf = AR[prev]; const joinPrev = pf && pf.length===4;
+    if (cp===0x644 && LAMALEF[cps[i+1]]){ out.push(LAMALEF[cps[i+1]][joinPrev?1:0]); i++; continue; }
+    const next = cps[i+1]; const joinNext = f.length===4 && AR[next] && !(next>=0x64B&&next<=0x65F);
+    out.push(joinPrev && joinNext ? f[3] : joinPrev ? f[1] : joinNext ? f[2] : f[0]);
+  }
+  // Görsel sıra: Latin/rakam parçaları kendi içinde soldan sağa kalır
+  const s = String.fromCodePoint(...out.filter(cp=>![0x200C,0x200D,0x200E,0x200F,0x202A,0x202B,0x202C].includes(cp))), runs = s.match(/(?:[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F0-9(@]|\+(?=\d))[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F0-9°€.,'\-\/ ()–+×@_]*[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F0-9°€)]|[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F0-9]|[^A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F0-9(+@]+|[(+@]/g) || [];
+  const MIR = {'(':')',')':'(','[':']',']':'[','«':'»','»':'«'};
+  // eşi olmayan parantez Latin/rakam parçasına dahil edilmez (ör. "(حتى 30.000 €)")
+  for (let i=0;i<runs.length;i++){ const r=runs[i]; if (!/[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F0-9]/.test(r)) continue;
+    if (r.endsWith(')') && !r.includes('(')){ runs.splice(i,1,r.slice(0,-1),')'); }
+    else if (r.startsWith('(') && !r.includes(')')){ runs.splice(i,1,'(',r.slice(1)); i++; } }
+  return runs.reverse().map(r => /[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F0-9]/.test(r) ? r : [...r].reverse().map(c=>MIR[c]||c).join('')).join('');
+}
+const UIX = {
+ tr:{kick:'Kişiye özel tedavi planı',watch:'Tedavinizi izleyin',watchSub:'Adım adım, sesli anlatımla 3D gösterim',loading:'Hazırlanıyor…',plan:'Planınız',prices:'Seanslar ve fiyat',total:'Toplam tedavi ücreti',about:'Tedaviniz hakkında',doctor:'Doktorunuz',info:'Bilgiler',waBtn:'WhatsApp’tan bize yazın',waMsg:'Merhaba, {q} numaralı tedavi planım hakkında bilgi almak istiyorum.',noVoice:'Bu cihazda sesli anlatım yok; açıklamalar ekranda yazılı.',soundOn:'Ses açık',soundOff:'Ses kapalı',privacy:'Bu sayfa size özel hazırlandı. Bilgileriniz hiçbir sunucuda saklanmaz.',bad:'Bu bağlantı açılamadı. Lütfen size gönderilen bağlantının tamamını kullanın.',qno:'Plan no'},
+ en:{kick:'Personalised treatment plan',watch:'Watch your treatment',watchSub:'Step-by-step 3D view with voice narration',loading:'Preparing…',plan:'Your plan',prices:'Sessions and price',total:'Total treatment price',about:'About your treatment',doctor:'Your doctor',info:'Details',waBtn:'Message us on WhatsApp',waMsg:'Hello, I would like to ask about my treatment plan no. {q}.',noVoice:'Voice narration is not available on this device; the explanations are shown on screen.',soundOn:'Sound on',soundOff:'Sound off',privacy:'This page was prepared for you. Your details are not stored on any server.',bad:'This link could not be opened. Please use the complete link we sent you.',qno:'Plan no.'},
+ de:{kick:'Persönlicher Behandlungsplan',watch:'Ihre Behandlung ansehen',watchSub:'3D-Ansicht Schritt für Schritt mit Sprachausgabe',loading:'Wird vorbereitet…',plan:'Ihr Plan',prices:'Sitzungen und Preis',total:'Gesamtpreis der Behandlung',about:'Über Ihre Behandlung',doctor:'Ihr Arzt',info:'Details',waBtn:'Schreiben Sie uns auf WhatsApp',waMsg:'Hallo, ich habe eine Frage zu meinem Behandlungsplan Nr. {q}.',noVoice:'Auf diesem Gerät ist keine Sprachausgabe verfügbar; die Erklärungen werden angezeigt.',soundOn:'Ton an',soundOff:'Ton aus',privacy:'Diese Seite wurde für Sie erstellt. Ihre Daten werden auf keinem Server gespeichert.',bad:'Dieser Link konnte nicht geöffnet werden. Bitte verwenden Sie den vollständigen Link.',qno:'Plan-Nr.'},
+ fr:{kick:'Plan de traitement personnalisé',watch:'Regardez votre traitement',watchSub:'Vue 3D étape par étape avec commentaire vocal',loading:'Préparation…',plan:'Votre plan',prices:'Séances et prix',total:'Prix total du traitement',about:'À propos de votre traitement',doctor:'Votre médecin',info:'Informations',waBtn:'Écrivez-nous sur WhatsApp',waMsg:'Bonjour, j’ai une question sur mon plan de traitement n° {q}.',noVoice:'Le commentaire vocal n’est pas disponible sur cet appareil ; les explications s’affichent à l’écran.',soundOn:'Son activé',soundOff:'Son coupé',privacy:'Cette page a été préparée pour vous. Vos données ne sont stockées sur aucun serveur.',bad:'Ce lien n’a pas pu être ouvert. Veuillez utiliser le lien complet envoyé.',qno:'Plan n°'},
+ es:{kick:'Plan de tratamiento personalizado',watch:'Vea su tratamiento',watchSub:'Vista 3D paso a paso con narración',loading:'Preparando…',plan:'Su plan',prices:'Sesiones y precio',total:'Precio total del tratamiento',about:'Sobre su tratamiento',doctor:'Su médico',info:'Información',waBtn:'Escríbanos por WhatsApp',waMsg:'Hola, quisiera preguntar por mi plan de tratamiento n.º {q}.',noVoice:'La narración no está disponible en este dispositivo; las explicaciones aparecen en pantalla.',soundOn:'Sonido activado',soundOff:'Sonido desactivado',privacy:'Esta página se ha preparado para usted. Sus datos no se guardan en ningún servidor.',bad:'No se pudo abrir este enlace. Utilice el enlace completo que le enviamos.',qno:'Plan n.º'},
+ pt:{kick:'Plano de tratamento personalizado',watch:'Veja o seu tratamento',watchSub:'Visualização 3D passo a passo com narração',loading:'A preparar…',plan:'O seu plano',prices:'Sessões e preço',total:'Preço total do tratamento',about:'Sobre o seu tratamento',doctor:'O seu médico',info:'Informações',waBtn:'Fale connosco no WhatsApp',waMsg:'Olá, gostaria de perguntar sobre o meu plano de tratamento n.º {q}.',noVoice:'A narração não está disponível neste dispositivo; as explicações aparecem no ecrã.',soundOn:'Som ligado',soundOff:'Som desligado',privacy:'Esta página foi preparada para si. Os seus dados não são guardados em nenhum servidor.',bad:'Não foi possível abrir esta ligação. Utilize a ligação completa que enviámos.',qno:'Plano n.º'},
+ ru:{kick:'Индивидуальный план лечения',watch:'Посмотрите ваше лечение',watchSub:'3D-показ шаг за шагом с озвучкой',loading:'Подготовка…',plan:'Ваш план',prices:'Этапы и стоимость',total:'Общая стоимость лечения',about:'О вашем лечении',doctor:'Ваш врач',info:'Информация',waBtn:'Написать нам в WhatsApp',waMsg:'Здравствуйте, у меня вопрос по плану лечения № {q}.',noVoice:'На этом устройстве нет озвучки; пояснения показываются на экране.',soundOn:'Звук вкл.',soundOff:'Звук выкл.',privacy:'Эта страница подготовлена для вас. Ваши данные не хранятся на сервере.',bad:'Не удалось открыть ссылку. Пожалуйста, используйте полную ссылку.',qno:'План №'},
+ bg:{kick:'Индивидуален план за лечение',watch:'Вижте Вашето лечение',watchSub:'3D показ стъпка по стъпка с гласово описание',loading:'Подготвя се…',plan:'Вашият план',prices:'Етапи и цена',total:'Обща цена на лечението',about:'За Вашето лечение',doctor:'Вашият лекар',info:'Информация',waBtn:'Пишете ни в WhatsApp',waMsg:'Здравейте, имам въпрос за плана си за лечение № {q}.',noVoice:'На това устройство няма гласово описание; обясненията са на екрана.',soundOn:'Звук вкл.',soundOff:'Звук изкл.',privacy:'Тази страница е подготвена за Вас. Данните Ви не се съхраняват на сървър.',bad:'Връзката не можа да се отвори. Моля, използвайте пълната връзка.',qno:'План №'},
+ it:{kick:'Piano di trattamento personalizzato',watch:'Guardi il Suo trattamento',watchSub:'Vista 3D passo dopo passo con voce narrante',loading:'Preparazione…',plan:'Il Suo piano',prices:'Sedute e prezzo',total:'Prezzo totale del trattamento',about:'Il Suo trattamento',doctor:'Il Suo medico',info:'Informazioni',waBtn:'Scriveteci su WhatsApp',waMsg:'Buongiorno, vorrei informazioni sul mio piano di trattamento n. {q}.',noVoice:'La voce narrante non è disponibile su questo dispositivo; le spiegazioni sono sullo schermo.',soundOn:'Audio attivo',soundOff:'Audio disattivato',privacy:'Questa pagina è stata preparata per Lei. I Suoi dati non sono salvati su alcun server.',bad:'Impossibile aprire questo link. Usi il link completo che Le abbiamo inviato.',qno:'Piano n.'},
+ pl:{kick:'Indywidualny plan leczenia',watch:'Zobacz swoje leczenie',watchSub:'Widok 3D krok po kroku z lektorem',loading:'Przygotowywanie…',plan:'Twój plan',prices:'Etapy i cena',total:'Łączna cena leczenia',about:'O leczeniu',doctor:'Twój lekarz',info:'Informacje',waBtn:'Napisz do nas na WhatsApp',waMsg:'Dzień dobry, mam pytanie dotyczące planu leczenia nr {q}.',noVoice:'Lektor nie jest dostępny na tym urządzeniu; objaśnienia są wyświetlane na ekranie.',soundOn:'Dźwięk wł.',soundOff:'Dźwięk wył.',privacy:'Ta strona została przygotowana dla Ciebie. Dane nie są przechowywane na żadnym serwerze.',bad:'Nie udało się otworzyć linku. Użyj pełnego linku, który wysłaliśmy.',qno:'Plan nr'},
+ ar:{kick:'خطة علاج مخصصة',watch:'شاهد علاجك',watchSub:'عرض ثلاثي الأبعاد خطوة بخطوة مع شرح صوتي',loading:'جارٍ التحضير…',plan:'خطتك',prices:'الجلسات والسعر',total:'السعر الإجمالي للعلاج',about:'عن علاجك',doctor:'طبيبك',info:'معلومات',waBtn:'راسلنا عبر واتساب',waMsg:'مرحباً، لدي سؤال عن خطة العلاج رقم {q}.',noVoice:'الشرح الصوتي غير متوفر على هذا الجهاز؛ تظهر الشروح على الشاشة.',soundOn:'الصوت مفعّل',soundOff:'الصوت متوقف',privacy:'أُعدّت هذه الصفحة لك. لا تُحفظ بياناتك على أي خادم.',bad:'تعذّر فتح هذا الرابط. يرجى استخدام الرابط الكامل المرسل إليك.',qno:'رقم الخطة'},
+ fa:{kick:'برنامه درمان اختصاصی',watch:'درمان خود را ببینید',watchSub:'نمایش سه‌بعدی گام‌به‌گام با توضیح صوتی',loading:'در حال آماده‌سازی…',plan:'برنامه شما',prices:'جلسات و هزینه',total:'هزینه کل درمان',about:'درباره درمان شما',doctor:'پزشک شما',info:'اطلاعات',waBtn:'در واتس‌اپ به ما پیام دهید',waMsg:'سلام، درباره برنامه درمان شماره {q} سؤال دارم.',noVoice:'توضیح صوتی در این دستگاه در دسترس نیست؛ توضیحات روی صفحه نمایش داده می‌شود.',soundOn:'صدا روشن',soundOff:'صدا خاموش',privacy:'این صفحه برای شما آماده شده است. اطلاعات شما در هیچ سروری ذخیره نمی‌شود.',bad:'این پیوند باز نشد. لطفاً از پیوند کامل استفاده کنید.',qno:'شماره برنامه'},
+ ro:{kick:'Plan de tratament personalizat',watch:'Vedeți tratamentul',watchSub:'Prezentare 3D pas cu pas, cu narațiune',loading:'Se pregătește…',plan:'Planul dumneavoastră',prices:'Ședințe și preț',total:'Prețul total al tratamentului',about:'Despre tratamentul dumneavoastră',doctor:'Medicul dumneavoastră',info:'Informații',waBtn:'Scrieți-ne pe WhatsApp',waMsg:'Bună ziua, am o întrebare despre planul de tratament nr. {q}.',noVoice:'Narațiunea nu este disponibilă pe acest dispozitiv; explicațiile apar pe ecran.',soundOn:'Sunet pornit',soundOff:'Sunet oprit',privacy:'Această pagină a fost pregătită pentru dumneavoastră. Datele nu sunt stocate pe niciun server.',bad:'Linkul nu a putut fi deschis. Folosiți linkul complet trimis.',qno:'Plan nr.'}
+};
+const LOC = {tr:'tr-TR',en:'en-GB',de:'de-DE',fr:'fr-FR',es:'es-ES',pt:'pt-PT',ru:'ru-RU',bg:'bg-BG',it:'it-IT',pl:'pl-PL',ar:'ar-SA',fa:'fa-IR',ro:'ro-RO'};
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const strip = s => String(s||'').replace(/^[\u{1F300}-\u{1FAFF}☀-➿️‍\s]+/u,'');
+async function decode(h){
+  const m = /^([zj])\.([A-Za-z0-9_-]+)$/.exec(h); if (!m) throw new Error('bad');
+  const b = atob(m[2].replace(/-/g,'+').replace(/_/g,'/')), u = Uint8Array.from(b, c=>c.charCodeAt(0));
+  let bytes = u;
+  if (m[1]==='z'){ const ds = new Blob([u]).stream().pipeThrough(new DecompressionStream('deflate-raw')); bytes = new Uint8Array(await new Response(ds).arrayBuffer()); }
+  return JSON.parse(new TextDecoder().decode(bytes)); }
+const WAI = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 12 12 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>';
+
+(async function main(){
+  const app = document.getElementById('app');
+  let P; try{ P = await decode(location.hash.slice(1)); }catch(_){ app.innerHTML = `<div class="err">${esc((UIX[(navigator.language||'en').slice(0,2)]||UIX.en).bad)}</div>`; return; }
+  const l = UIX[P.l] ? P.l : 'en', U = UIX[l];
+  document.documentElement.lang = l; if (['ar','fa'].includes(l)) document.documentElement.dir = 'rtl';
+  document.title = `${U.kick} · Renewal Medical Clinic`;
+  const waTxt = encodeURIComponent(U.waMsg.replace('{q}', P.qno||''));
+  app.innerHTML = `
+  <header class="hero"><div class="brand"><img src="tpl/dent/logo_big.png" alt=""><div><b>Renewal Medical Clinic</b><small>${esc(P.slogan||'')}</small></div></div>
+    <div class="in"><div class="kick">${esc(U.kick)}</div><h1>${esc(P.hi)}</h1><p>${esc(P.intro)}</p></div></header>
+  <main>
+    <section class="card"><h2>${esc(U.plan)}</h2><p class="story">${esc(strip(P.story))}</p></section>
+    ${P.sim ? `<section class="card sim" id="sim"><div class="sh"><h2>${esc(U.watch)}</h2></div>
+      <div class="stage" id="stage"><button type="button" class="poster" id="poster"><span class="pl"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span><b>${esc(U.watch)}</b><span>${esc(U.watchSub)}</span></button>
+        <div class="load" id="load"><div class="spin"></div><span>${esc(U.loading)}</span></div></div>
+      <div class="ctl" id="ctl" hidden><button type="button" class="main" id="pp" aria-label="Play">▶</button><button type="button" id="rw" aria-label="Replay">↺</button><div class="bar"><i id="pb"></i></div><button type="button" id="snd" aria-label="${esc(U.soundOn)}">🔊</button></div>
+      <div class="note" id="vnote" hidden></div></section>` : ''}
+    <section class="card"><h2>${esc(U.prices)}</h2>${(P.ses||[]).map(s=>`<div class="ses"><div class="t"><b>${esc(s.t)}</b>${s.price ? `<em>${esc(s.price)}</em>` : ''}</div>${s.stay ? `<div class="st">${esc(s.stay)}</div>` : ''}
+      <ul>${(s.items||[]).map(i=>`<li>${esc(i)}</li>`).join('')}</ul>${s.plbl && s.price ? `<div class="pl2">${esc(s.plbl)} ${esc(P.incNote||'')}</div>` : ''}</div>`).join('')}</section>
+    <section class="card tot"><div class="r"><span>${esc(P.totalLbl||U.total)}</span><b>${esc(P.total)}</b></div>${P.pay ? `<p>${esc(P.pay)}</p>` : ''}${!P.pay && P.incNote ? `<p>${esc(P.incNote)}</p>` : ''}</section>
+    <section class="card"><h2>${esc(strip(P.incLbl))}</h2><ul class="inc">${(P.inc||[]).map(x=>{ const m = /^(\S+)\s+(.*)$/u.exec(x); return `<li><i>${esc(m?m[1]:'✓')}</i><span>${esc(m?m[2]:x)}</span></li>`; }).join('')}</ul></section>
+    ${(P.about||[]).length ? `<section class="card"><h2>${esc(U.about)}</h2><div class="ab">${P.about.map((a,i)=>`<details ${i===0?'open':''}><summary>${esc(a[0])}</summary><p>${esc(a[1])}</p></details>`).join('')}</div></section>` : ''}
+    ${P.doc ? `<section class="card"><h2>${esc(U.doctor)}</h2><div class="doc"><img src="tpl/dent/doctor.jpg" alt=""><div><b>${esc(P.doc)}</b><span>${esc(P.docRole||'')}</span></div></div></section>` : ''}
+    <section class="card"><h2>${esc(U.info)}</h2><div class="meta">${[P.certs, P.deposit, P.valid].filter(Boolean).map(x=>{ const m = /^(\S+)\s+(.*)$/u.exec(x); return `<div>${m && /\p{Extended_Pictographic}/u.test(m[1]) ? `<span>${esc(m[1])}</span><span>${esc(m[2])}</span>` : `<span>•</span><span>${esc(x)}</span>`}</div>`; }).join('')}
+      <div><span>🔖</span><span>${esc(U.qno)}: ${esc(P.qno||'')}</span></div></div>${P.sign ? `<div class="sign">${esc(P.bye||'')}${P.bye?'\n':''}${esc(P.sign)}</div>` : ''}</section>
+  </main>
+  <footer><span>${esc(U.privacy)}</span><span><a href="https://renewalmedicalclinic.com" target="_blank" rel="noopener">renewalmedicalclinic.com</a> · <a href="https://www.instagram.com/renewalmedicalclinic.tr/" target="_blank" rel="noopener">@renewalmedicalclinic.tr</a></span></footer>
+  <div class="cta"><a href="https://wa.me/${esc(P.wa||'905380310510')}?text=${waTxt}" target="_blank" rel="noopener">${WAI}<span>${esc(U.waBtn)}</span></a></div>`;
+  if (P.sim) setupSim(P, l, U);
+})();
+
+function setupSim(P, l, U){
+  const g = id => document.getElementById(id);
+  let V = null, D = 0, CUES = [], t = 0, playing = false, last = 0, ci = 0, speaking = false, sound = true, voice = null;
+  const synth = window.speechSynthesis;
+  const pickVoice = () => { if (!synth) return null; const vs = synth.getVoices(), lc = LOC[l] || l; return vs.find(v=>v.lang===lc) || vs.find(v=>v.lang && v.lang.toLowerCase().startsWith(l)) || null; };
+  if (synth){ voice = pickVoice(); synth.onvoiceschanged = () => { voice = pickVoice(); }; }
+  async function load(){
+    g('load').classList.add('on');
+    const [THREE, {GLTFLoader}, {RoomEnvironment}, {DecalGeometry}, {create}] = await Promise.all([
+      import('./lib/three.module.js'), import('./lib/GLTFLoader.js'), import('./lib/RoomEnvironment.js'), import('./lib/DecalGeometry.js'), import('./vid3d/dent3d.js')]);
+    const fonts = {}; await Promise.all(['lora','reg','med','ireg','arf'].map(async k=>{ fonts[k] = await (await fetch(`fonts/${k}.json`)).json(); }));
+    const logo = await new Promise((ok,bad)=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=bad; i.src='tpl/dent/logo_big.png'; });
+    const canvas = document.createElement('canvas');
+    V = await create({THREE, GLTFLoader, RoomEnvironment, DecalGeometry, canvas, glbUrl:'vid3d/mouth3d.json', fonts, logo, shape: typeof shapeArabic==='function' ? shapeArabic : (s=>s)});
+    D = V.build(P.sim); CUES = V.cues || [];
+    for (let k=0; k<D; k+=0.5) V.frame(k);   // ısınma: takılma olmasın
+    V.frame(0); g('stage').classList.add('on'); g('stage').prepend(canvas); g('poster').remove(); g('load').classList.remove('on'); g('ctl').hidden = false;
+    if (!synth || !voice){ sound = false; g('snd').hidden = true; g('vnote').textContent = U.noVoice; g('vnote').hidden = false; }
+  }
+  function say(s){ if (!sound || !synth || !voice || !s) return; const u = new SpeechSynthesisUtterance(s); u.lang = voice.lang; u.voice = voice; u.rate = 0.95;
+    speaking = true; u.onend = u.onerror = () => { speaking = false; }; synth.speak(u); }
+  function tick(now){ if (!playing) return; const dt = Math.min(0.1, (now-last)/1000); last = now;
+    while (ci < CUES.length && t >= CUES[ci].t){ say(CUES[ci].s); ci++; }
+    const hold = speaking && ci < CUES.length && t >= CUES[ci].t - 0.05;   // anlatım bitmeden sonraki adıma geçme
+    if (!hold) t = Math.min(D, t + dt);
+    V.frame(t); g('pb').style.width = (t/D*100).toFixed(1)+'%';
+    if (t >= D && !speaking){ playing = false; g('pp').textContent = '▶'; return; }
+    requestAnimationFrame(tick); }
+  function play(){ if (t >= D){ t = 0; ci = 0; } playing = true; last = performance.now(); g('pp').textContent = '❚❚'; if (synth) synth.resume(); requestAnimationFrame(tick); }
+  function pause(){ playing = false; g('pp').textContent = '▶'; if (synth){ synth.cancel(); speaking = false; } }
+  g('poster').onclick = async () => { if (synth && voice){ const u = new SpeechSynthesisUtterance(' '); u.volume = 0; synth.speak(u); }   // iOS: sesi ilk dokunuşta aç
+    try{ await load(); play(); }catch(e){ g('load').classList.remove('on'); g('vnote').textContent = U.bad; g('vnote').hidden = false; } };
+  g('pp').onclick = () => playing ? pause() : play();
+  g('rw').onclick = () => { pause(); t = 0; ci = 0; V.frame(0); g('pb').style.width = '0'; play(); };
+  g('snd').onclick = () => { sound = !sound; g('snd').textContent = sound ? '🔊' : '🔇'; g('snd').setAttribute('aria-label', sound ? U.soundOn : U.soundOff); if (!sound && synth){ synth.cancel(); speaking = false; } };
+}
+</script>
+</body>
+</html>
